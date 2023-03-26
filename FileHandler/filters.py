@@ -18,7 +18,6 @@ class CsvFilterRead(FilterInterface):
         self._header = header
         self._sep = sep
         self.na_values = na_values
-
     @property
     def filepath(self):
         return self._filepath
