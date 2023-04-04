@@ -3,11 +3,39 @@ version: "3.4"
 services:
   django:
     build: .
-    command: python mis/manage.py runserver localhost:8080
+    entrypoint: /app/bootstrap.sh
     environment:
+      - PYTHONUNBUFFERED=1
+      - DJANGO_SUPERUSER_USERNAME=admin
+      - DJANGO_SUPERUSER_EMAIL=tst@gmail.com
+      - DJANGO_SUPERUSER_PASSWORD=123
       - SECRET_KEY=12345
       - DEBUG=True
+      - POSTGRES_DB=mis
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=12345
     ports:
       - 8080:8080
     volumes:
       - .:/app
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=mis
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=12345
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    #volumes:
+     # - ./db_data:/var/lib/postgresql/data/pgdata
+    healthcheck:
+      #test: [ "CMD-SHELL", "pg_isready -U admin -d mis" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+
