@@ -1,6 +1,7 @@
 FROM python:3.8.10
 WORKDIR /app
 COPY requirements.txt .
+
 RUN grep -v pkg_resources requirements.txt   > req_tmp.txt
 RUN cat req_tmp.txt >requirements.txt; rm req_tmp.txt
 
