@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Доступные запросы на выгрузки</title>
+</head>
+<body>
+<table>
+    {% if queries %}
+    <tr>
+        <td>Имя</td>
+        <td>Описание</td>
+    </tr>
+    {% else %}
+    <p>Запросы отсутствуют</p>
+    {% endif %}
+    {% for query in queries %}
+    <tr>
+        <td class="query"><a href="{% url 'query:query' query.id %}">{{ query.name }}</a></td>
+        <td class="query">{{ query.description }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
