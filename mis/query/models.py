@@ -22,3 +22,11 @@ class Params(models.Model):
     type = models.IntegerField(choices=Types.choices)
     description = models.CharField(max_length=200)
     query = models.ForeignKey(Query, on_delete=models.CASCADE)
+
+class Fields(models.Model):
+
+    order = models.IntegerField()
+    default_name = models.CharField(max_length=100)
+    actual_name = models.CharField(max_length=100, blank=True)
+    query = models.ForeignKey(Query, on_delete=models.CASCADE)
+
