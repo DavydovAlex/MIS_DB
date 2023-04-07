@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Доступные запросы на выгрузки</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}
+<title>Доступные выгрузки</title>
+{% endblock %}
+
+
+
+{% block content %}
 <table>
     {% if queries %}
     <tr>
@@ -21,6 +23,4 @@
     </tr>
     {% endfor %}
 </table>
-
-</body>
-</html>
+{% endblock %}
