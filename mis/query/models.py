@@ -12,7 +12,6 @@ class Query(models.Model):
 
 
 class Params(models.Model):
-
     class Types(models.IntegerChoices):
         STR = 1
         INT = 2
@@ -24,9 +23,25 @@ class Params(models.Model):
     query = models.ForeignKey(Query, on_delete=models.CASCADE)
 
 class Fields(models.Model):
-
     order = models.IntegerField()
     default_name = models.CharField(max_length=100)
     actual_name = models.CharField(max_length=100, blank=True)
     query = models.ForeignKey(Query, on_delete=models.CASCADE)
+
+
+class Uploadings(models.Model):
+    query = models.ForeignKey(Query, on_delete= models.CASCADE)
+    file_path = models.FilePathField()
+
+
+class ParamsValues(models.Model):
+    class Status(models.IntegerChoices):
+        LOADED = 1
+        IN_PROCESS = 2
+
+    param = models.ForeignKey(Params, on_delete=models.CASCADE)
+    value = models.CharField(max_length=250)
+    uploading = models.ForeignKey(Uploadings, on_delete=models.CASCADE)
+
+
 

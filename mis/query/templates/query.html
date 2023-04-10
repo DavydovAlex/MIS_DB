@@ -1,10 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block title %}
+<title>{{ query.name }}</title>
+{% endblock %}
+
+{% block content %}
+<div>
+    <div>
+        <p>{{ query.name }}</p>
+       <!-- <p><pre>{{ query.query }}</pre></p> -->
+        {{ query.description }}
+    </div>
+    <div>
+        <table>
+            <tr>
+                <th>Порядок</th>
+                <th>Имя</th>
+            </tr>
+            {% for field in fields %}
+            <tr>
+                <td>{{ field.order }}</td>
+                <td>{{ field.default_name }}</td>
+
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div>
+        <form method="post">
+            <table>
+                {% for param in params %}
+
+                {% endfor %}
+            </table>
+        </form>
+    </div>
+</div>
+{% endblock %}
