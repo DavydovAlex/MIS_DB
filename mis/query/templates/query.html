@@ -6,35 +6,67 @@
 
 {% block content %}
 <div>
-    <div>
-        <p>{{ query.name }}</p>
-       <!-- <p><pre>{{ query.query }}</pre></p> -->
-        {{ query.description }}
+    <div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
+    <div class="lh-1">
+      <h1 class="h6 mb-0 text-white lh-1">{{ query.name }}</h1>
+      <small>{{ query.description }}</small>
     </div>
-    <div>
-        <table>
-            <tr>
-                <th>Порядок</th>
-                <th>Имя</th>
-            </tr>
-            {% for field in fields %}
-            <tr>
-                <td>{{ field.order }}</td>
-                <td>{{ field.default_name }}</td>
-
-            </tr>
-            {% endfor %}
-        </table>
     </div>
+    <div class="row g-5">
 
-    <div>
-        <form method="post">
-            <table>
-                {% for param in params %}
-
+        <div class="col-md-7 col-lg-6 order-md-last">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-primary">Параметры</span>
+        </h4>
+        <form class="card p-2"  method="post">
+            {% csrf_token %}
+        <ul class="list-group mb-3">
+            {% if params%}
+             {% for param in params %}
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                <h6 class="my-0">{{ param.name }}</h6>
+                    <small class="text-muted">{{ param.description }}</small>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="{{ param.name }}" placeholder="" value="" required>
+                    </div>
+                </li>
                 {% endfor %}
-            </table>
+            {% else %}
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div><h6 class="my-0">Для данной выгрузки не требуются входные параметры</h6></div>
+                </li>
+            {% endif %}
+        </ul>
+              <div class="input-group">
+            <button type="submit" class="btn btn-secondary">Сформировать</button>
+          </div>
         </form>
+      </div>
+
+        <div class="col-md-5 col-lg-6">
+        <h4 class="mb-3">Поля выгрузки</h4>
+                 <div class="bd-example">
+        <table class="table table-sm table-bordered">
+          <thead>
+          <tr>
+            <th  class="col-md-1 col-lg-1" scope="col">Порядок</th>
+            <th scope="col">Имя</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for field in fields %}
+          <tr>
+            <td>{{ field.order}}</td>
+            <td>{{ field.actual_name}}</td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        </div>
+        </div>
     </div>
+
 </div>
 {% endblock %}

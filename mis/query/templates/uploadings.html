@@ -1,15 +1,13 @@
 {% extends "base.html" %}
 
 {% block title %}
-<title>Доступные выгрузки</title>
+<title>Выгрузки</title>
 {% endblock %}
-
-
 
 {% block content %}
 <div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
     <div class="lh-1">
-      <h1 class="h6 mb-0 text-white lh-1">Доступные выгрузки</h1>
+      <h1 class="h6 mb-0 text-white lh-1">Сформированные выгрузки</h1>
     </div>
   </div>
   <div class="my-3 p-3 bg-body rounded shadow-sm">
@@ -24,8 +22,9 @@
         <strong class="d-block text-gray-dark"><a class="nav-item" href="{% url 'query:query' query.id %}">{{ query.name }}</a></strong>
         {{ query.description }}
       </p>
-          </div>
+      </div>
     {% endfor %}
   </div>
 
 {% endblock %}
+
