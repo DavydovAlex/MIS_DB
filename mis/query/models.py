@@ -1,7 +1,15 @@
+import datetime
+
 from django.db import models
+from datetime import date
 
 # Create your models here.
+
+
+
+
 class Query(models.Model):
+
     name = models.CharField(max_length=100, help_text='Введите имя запроса')
     query = models.TextField(help_text='Тело запроса')
     description = models.CharField(max_length=200, help_text='Краткое описание')
@@ -36,6 +44,8 @@ class Uploadings(models.Model):
     query = models.ForeignKey(Query, on_delete=models.CASCADE)
     file_path = models.FilePathField() #null=True, blank=True
     status = models.IntegerField(choices=Status.choices, default=Status.IN_PROCESS)
+    create_date = models.DateTimeField(default=datetime.datetime(1900,1,1))
+    comment = models.CharField(max_length=200, blank=True)
 
 
 class ParamsValues(models.Model):

@@ -10,8 +10,8 @@
       <h1 class="h6 mb-0 text-white lh-1">Сформированные выгрузки</h1>
     </div>
   </div>
-  <div class="my-3 p-3 bg-body rounded shadow-sm">
-    {% for query in queries %}
+ <!-- <div class="my-3 p-3 bg-body rounded shadow-sm">
+    {% for upl in upls %}
       <div class="d-flex text-muted pt-3">
       <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32"
            xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32"
@@ -19,12 +19,44 @@
           <rect width="100%" height="100%" fill="#007bff"/>
       </svg>
       <p class="pb-3 mb-0 small lh-sm border-bottom">
-        <strong class="d-block text-gray-dark"><a class="nav-item" href="{% url 'query:query' query.id %}">{{ query.name }}</a></strong>
-        {{ query.description }}
+        <strong class="d-block text-gray-dark"><a class="nav-item" href="">{{ upl.query.name }}</a></strong>
+        {{  upl.query.description }}
       </p>
       </div>
     {% endfor %}
-  </div>
+  </div> -->
+<div class="my-3 p-3 bg-body rounded shadow-sm">
+  <table class="table ">
+    <tbody>
+    {% for upl in upls %}
+    {% if upl.params %}
+    <tr>
+    <td rowspan="{{ upl.param_len}}" align="center" valign="middle">{{ upl.query.name }}</td>
+    <td rowspan="{{ upl.param_len}}" align="center" valign="middle">{{ upl.query.description }}</td>
+      <td></td>
+      <td></td>
+    <td rowspan="{{ upl.param_len}}" align="center" valign="middle">{{ upl.upl.comment }}</td>
+    <td rowspan="{{ upl.param_len}}" align="center" valign="middle">{{ upl.upl.create_date }}</td>
+      {% for param in upl.params %}
+      <tr>
+        <td>{{ param.param }}</td>
+        <td>{{ param.value }}</td>
+    </tr>
+        {% endfor %}
+    </tr>
+    {% else %}
+<!--        <tr>
+    <td>{{ upl.query.name }}</td>
+          <td>{{ upl.query.description }}</td>
+            <td></td>
+    <td>{{ upl.upl.comment }}</td>
+    <td>{{ upl.upl.create_date }}</td>
+    </tr>-->
+    {% endif %}
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
 
 {% endblock %}
 
