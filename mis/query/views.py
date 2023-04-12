@@ -40,13 +40,16 @@ def query(request, pk):
 def uploadings(request):
     uploadings = Uploadings.objects.all().order_by('-create_date')
     upl_list = []
+
     for upl in uploadings:
         print(upl.pk)
         uploading_context = {
             'upl': upl,
             'query': Query.objects.get(pk=upl.query.pk),
-            'params': ParamsValues.objects.filter(uploading=upl.pk),
-            'param_len': len(ParamsValues.objects.filter(uploading=upl.pk))+1
+            'params': ParamsValues.objects.filter(uploading=upl.pk).select_related('param')
         }
+        print(ParamsValues.objects.filter(uploading=upl.pk))
+
+
         upl_list.append(uploading_context)
     return render(request,'uploadings.html',context={'upls': upl_list})
