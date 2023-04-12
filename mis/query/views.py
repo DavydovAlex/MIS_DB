@@ -46,9 +46,9 @@ def uploadings(request):
         uploading_context = {
             'upl': upl,
             'query': Query.objects.get(pk=upl.query.pk),
-            'params': ParamsValues.objects.filter(uploading=upl.pk).select_related('param')
+            'params': ParamsValues.objects.filter(uploading=upl.pk)
         }
-        print(ParamsValues.objects.filter(uploading=upl.pk))
+        print(ParamsValues.objects.filter(uploading=upl.pk).select_related('param').values())
 
 
         upl_list.append(uploading_context)
