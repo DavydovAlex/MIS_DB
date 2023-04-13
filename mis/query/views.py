@@ -29,7 +29,7 @@ def query(request, pk):
         query_params = Params.objects.filter(query=pk)
         with transaction.atomic():
 
-            p = Uploadings.objects.create(query=Query(id=pk), status=Uploadings.Status.IN_PROCESS,
+            p = Uploadings.objects.create(query=Query(id=pk), status=Uploadings.Status.WAITING,
                                           file_path='',comment=request.POST.get("comment"),create_date=datetime.now())
             for param in query_params:
                 ParamsValues.objects.create(param=Params(param.id), value=request.POST.get(param.name), uploading=p)
@@ -48,7 +48,7 @@ def uploadings(request):
             'query': Query.objects.get(pk=upl.query.pk),
             'params': ParamsValues.objects.filter(uploading=upl.pk)
         }
-        print(ParamsValues.objects.filter(uploading=upl.pk).select_related('param').values())
+
 
 
         upl_list.append(uploading_context)

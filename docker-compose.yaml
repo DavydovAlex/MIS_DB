@@ -14,10 +14,16 @@ services:
       - POSTGRES_DB=mis
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=12345
+      - DJANGO_SETTINGS_MODULE=mis.settings
+      - ORACLE_HOME=/opt/oracle
+      - TNS_ADMIN=/opt/oracle/instantclient_21_9/network/admin
+      - CLIENT_ZIP=instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
+
     ports:
       - 8080:8080
     volumes:
       - .:/app
+      - ./TNSNAMES.ORA:/opt/oracle/instantclient_21_9/network/admin/TNSNAMES.ORA
     depends_on:
       - db
     links:

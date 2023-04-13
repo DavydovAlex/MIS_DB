@@ -1,0 +1,10 @@
+DB_MIS =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 10.101.39.53)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = nsocluster)
+	  (SERVER = DEDICATED)
+    )
+  )

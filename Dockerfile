@@ -7,8 +7,12 @@ RUN cat req_tmp.txt >requirements.txt; rm req_tmp.txt
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-COPY mis mis
-
+#COPY mis mis
+#RUN unzip ${CLIENT_ZIP}
+#ARG ORACLE_ZIP_INTERNAL_FOLDER=instantclient_21_9
+#RUN mv ${ORACLE_ZIP_INTERNAL_FOLDER} /opt/oracle
+#ENV ORACLE_HOME /opt/oracle
+#ENV TNS_ADMIN ${ORACLE_HOME}/network/admin
 #ENV PYTHONUNBUFFERED=1
 #ENV DJANGO_SUPERUSER_USERNAME=admin
 #ENV DJANGO_SUPERUSER_EMAIL=tst@gmail.com

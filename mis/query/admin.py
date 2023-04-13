@@ -19,3 +19,7 @@ class QueryModelAdmin(admin.ModelAdmin):
         FieldsInline
     ]
 
+@admin.register(models.DbUsers)
+class DbUsersModelAdmin(admin.ModelAdmin):
+    fields = ('login', 'password', 'dont_use', 'in_process')
+    list_display = ('login',  'dont_use', 'in_process')
