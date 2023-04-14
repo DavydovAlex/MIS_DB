@@ -1,12 +1,8 @@
 FROM python:3.8.10
 WORKDIR /app
-COPY requirements.txt .
 
-RUN grep -v pkg_resources requirements.txt   > req_tmp.txt
-RUN cat req_tmp.txt >requirements.txt; rm req_tmp.txt
+#COPY requirements.txt .
 
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
 #COPY mis mis
 #RUN unzip ${CLIENT_ZIP}
 #ARG ORACLE_ZIP_INTERNAL_FOLDER=instantclient_21_9
