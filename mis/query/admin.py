@@ -23,3 +23,7 @@ class QueryModelAdmin(admin.ModelAdmin):
 class DbUsersModelAdmin(admin.ModelAdmin):
     fields = ('login', 'password', 'dont_use', 'in_process')
     list_display = ('login',  'dont_use', 'in_process')
+
+@admin.register(models.Uploadings)
+class UploadingsModelAdmin(admin.ModelAdmin):
+    fields = ('query','comment','crate_date')
