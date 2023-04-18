@@ -26,4 +26,4 @@ class DbUsersModelAdmin(admin.ModelAdmin):
 
 @admin.register(models.Uploadings)
 class UploadingsModelAdmin(admin.ModelAdmin):
-    fields = ('query','comment','crate_date')
+    fields = ('query','comment','create_date','file_path')

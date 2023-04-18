@@ -43,7 +43,7 @@ class Uploadings(models.Model):
         LOADED = 1
         IN_PROCESS = 2
     query = models.ForeignKey(Query, on_delete=models.CASCADE)
-    file_path = models.FilePathField() #null=True, blank=True
+    file_path = models.CharField(default='') #null=True, blank=True
     status = models.IntegerField(choices=Status.choices, default=Status.WAITING)
     create_date = models.DateTimeField(default=datetime.datetime(1900,1,1))
     comment = models.CharField(max_length=200, blank=True)

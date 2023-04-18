@@ -2,6 +2,9 @@ from django.shortcuts import render, HttpResponse, HttpResponseRedirect, reverse
 from .models import Query, Params, Fields ,ParamsValues, Uploadings
 from django.db import transaction
 from datetime import date,datetime
+import os
+from django.conf import settings
+from django.conf import settings
 # Create your views here.
 
 def queries(request):
@@ -53,3 +56,15 @@ def uploadings(request):
 
         upl_list.append(uploading_context)
     return render(request,'uploadings.html',context={'upls': upl_list})
+
+
+def download(request, file_base_name):
+    file_path = str(settings.BASE_DIR) + '/data/' + file_base_name
+    print('----------------')
+    print(file_path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/force_download")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    # If file is not exists

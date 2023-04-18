@@ -43,7 +43,7 @@ def exec(user, uploading):
     select_query = query.Query(name=uploading.query.name, query=uploading.query.query, params={})
     data = connection.select(select_query)
     file_name = uploading.query.name + '_' + uploading.comment + '.xlsx'
-    path = r'/app/data/' + file_name
+    path = file_name
     ex_w = filters.ExcelFilterWrite(path, chunk_size=999999, sheet_name='Sheet')
     handlers.ExcelHandler.write(data, ex_w)
     upl.update(file_path=path,status=Uploadings.Status.LOADED)

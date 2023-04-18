@@ -51,7 +51,9 @@
 
        <div class=" col-1 pb-3 mb-0 lh-sm border-bottom "><p class="text-center">{{ upl.upl.create_date }}</p></div>
            <div class=" col-2 pb-3 mb-0 lh-sm border-bottom "><p class="text-center">{{ upl.upl.get_status_display }}</p></div>
-          <div class=" col-2 pb-3 mb-0 lh-sm border-bottom "><a class="nav-item" href="{{ upl.upl.filepath }}" download="">Ссылка</a></div>
+          {% if upl.upl.file_path %}
+          <div class=" col-2 pb-3 mb-0 lh-sm border-bottom "><a class="nav-item" href="{% url 'query:download' upl.upl.file_path %}" download>Ссылка</a></div>
+          {% endif %}
 
 
       </div>
