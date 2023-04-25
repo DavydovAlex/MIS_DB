@@ -9,8 +9,14 @@ RUN grep -v pkg_resources requirements.txt > req_tmp.txt
 RUN cat req_tmp.txt > requirements.txt; rm req_tmp.txt
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+#RUN apt-get install nano
+
+
 RUN apt-get update && apt-get -yq install unzip
 RUN apt-get install libaio1
+#RUN apt-get install -y cron
+
+#RUN crontab -l | { cat; echo "5 * * * * python /app/mis/worker.py"; } | crontab -
 
 COPY $CLIENT .
 RUN unzip $CLIENT

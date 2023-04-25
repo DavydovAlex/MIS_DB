@@ -22,11 +22,48 @@ services:
 
     ports:
       - 8080:8080
+      #- 1521:1521
+    volumes:
+      - ./instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip:/app/instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
+      - ./mis:/app/mis
+      - ./bootstrap.sh:/app/bootstrap.sh
+      #- ./TNSNAMES.ORA:/app/TNSNAMES.ORA
+      - ./requirements.txt:/app/requirements.txt
+      - ./DB:/usr/bin/DB
+      - ./FileHandler:/usr/bin/FileHandler
+      - ./data:/app/mis/data
+    depends_on:
+      - db
+    links:
+      - db
+  cron:
+    restart: always
+    build: .
+    entrypoint: /app/cron.sh
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DJANGO_SUPERUSER_USERNAME=admin
+      - DJANGO_SUPERUSER_EMAIL=tst@gmail.com
+      - DJANGO_SUPERUSER_PASSWORD=123
+      - SECRET_KEY=12345
+      - DEBUG=True
+      - POSTGRES_DB=mis
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=12345
+      - DJANGO_SETTINGS_MODULE=mis.settings
+      - ORACLE_HOME=/opt/oracle/instantclient_21_9
+      - LD_LIBRARY_PATH=/opt/oracle/instantclient_21_9
+      - TNS_ADMIN=/opt/oracle/instantclient_21_9/network/admin
+      - CLIENT_ZIP=instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
+
+    ports:
+      #- 8080:8080
       - 1521:1521
     volumes:
       - ./instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip:/app/instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
       - ./mis:/app/mis
       - ./bootstrap.sh:/app/bootstrap.sh
+      - ./cron.sh:/app/cron.sh
       #- ./TNSNAMES.ORA:/app/TNSNAMES.ORA
       - ./requirements.txt:/app/requirements.txt
       - ./DB:/usr/bin/DB

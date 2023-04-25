@@ -46,13 +46,16 @@ def exec(user, uploading):
     path = file_name
     ex_w = filters.ExcelFilterWrite(path, chunk_size=999999, sheet_name='Sheet')
     handlers.ExcelHandler.write(data, ex_w)
-    upl.update(file_path=path,status=Uploadings.Status.LOADED)
+    upl.update(file_path=path, status=Uploadings.Status.LOADED)
     usr.update(in_process=False)
 
 if __name__ == "__main__":
-    user = get_available_users()[0]
-    upl = get_uploadings_to_process()[0]
-    exec(user, upl)
+    user = get_available_users()
+    upl = get_uploadings_to_process()
+    print(upl[0].get_params_values())
+    if user and upl:
+        pass
+        #exec(user[0], upl[0])
 
     #while True:
         #time.sleep(100)

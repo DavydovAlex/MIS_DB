@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 cd /app/mis
 python manage.py makemigrations
 python manage.py migrate

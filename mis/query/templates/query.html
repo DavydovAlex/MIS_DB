@@ -21,7 +21,7 @@
         <form class="card p-2"  method="post">
             {% csrf_token %}
         <ul class="list-group mb-3">
-            {% if params%}
+            {% if params %}
              {% for param in params %}
                 <li class="list-group-item d-flex justify-content-between lh-sm">
                     <div>
@@ -29,7 +29,7 @@
                     <small class="text-muted">{{ param.description }}</small>
                     </div>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control" name="{{ param.name }}" placeholder="" value="" required>
+                        <input type="text" class="form-control" name="{{ param.name }}"  placeholder="" value="" required>
                     </div>
                 </li>
                 {% endfor %}
