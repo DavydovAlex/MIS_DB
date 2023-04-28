@@ -32,6 +32,7 @@ services:
       - ./DB:/usr/bin/DB
       - ./FileHandler:/usr/bin/FileHandler
       - ./data:/app/mis/data
+      #- X:\2_Отдел разработки\Давыдов\DATA:/app/mis/data
     depends_on:
       - db
     links:
@@ -55,6 +56,8 @@ services:
       - LD_LIBRARY_PATH=/opt/oracle/instantclient_21_9
       - TNS_ADMIN=/opt/oracle/instantclient_21_9/network/admin
       - CLIENT_ZIP=instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
+      - FILES=/app/mis/data
+
 
     ports:
       #- 8080:8080
@@ -69,6 +72,7 @@ services:
       - ./DB:/usr/bin/DB
       - ./FileHandler:/usr/bin/FileHandler
       - ./data:/app/mis/data
+      #- X:\2_Отдел разработки\Давыдов\DATA:/app/mis/data
     depends_on:
       - db
     links:

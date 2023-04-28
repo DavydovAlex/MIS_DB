@@ -61,6 +61,6 @@ def download(request, file_base_name):
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/force_download")
-            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            response['Content-Disposition'] = 'inline; filename=' + file_path #os.path.basename(file_path)
             return response
     # If file is not exists

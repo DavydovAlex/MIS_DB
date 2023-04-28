@@ -8,6 +8,8 @@ import time
 import threading
 import asyncio
 import django
+from django.db import transaction
+from django.conf import settings
 
 
 
@@ -34,28 +36,50 @@ def exec(user, uploading):
         )
       )
         """
-    upl = Uploadings.objects.filter(pk=uploading.pk)
-    usr = DbUsers.objects.filter(pk=user.pk)
+    upl = Uploadings.objects.get(pk=uploading.pk)
+    usr = DbUsers.objects.get(pk=user.pk)
     connection = database.DatabaseMis(user.login, user.password, dsn)
-    param_values = ParamsValues.objects.filter(uploading=uploading.pk)
-    upl.update(status=Uploadings.Status.IN_PROCESS)
-    usr.update(in_process=True)
-    select_query = query.Query(name=uploading.query.name, query=uploading.query.query, params={})
-    data = connection.select(select_query)
-    file_name = uploading.query.name + '_' + uploading.comment + '.xlsx'
-    path = file_name
-    ex_w = filters.ExcelFilterWrite(path, chunk_size=999999, sheet_name='Sheet')
-    handlers.ExcelHandler.write(data, ex_w)
-    upl.update(file_path=path, status=Uploadings.Status.LOADED)
-    usr.update(in_process=False)
+    params = upl.get_params_values()
+    upl.status = Uploadings.Status.IN_PROCESS
+    usr.in_process = True
+    with transaction.atomic():
+        upl.save()
+        usr.save()
+    try:
+        select_query = query.Query(name=uploading.query.name,
+                                   query=uploading.query.query,
+                                   params=params)
+        data = connection.select(select_query)
+        print(data.head())
+
+        file_name = uploading.query.name + '_' + uploading.comment + '.xlsx'
+        file_path = str(settings.BASE_DIR) + '/data/' + file_name
+        print(file_path)
+        path = file_name # os.path.join(os.environ['FILES'],)
+        ex_w = filters.ExcelFilterWrite(file_path, chunk_size=999999, sheet_name='Sheet')
+        handlers.ExcelHandler.write(data, ex_w)
+        upl.file_path = path
+        upl.status = Uploadings.Status.LOADED
+        upl.save()
+    except Exception as e:
+        print(e)
+        upl.status = Uploadings.Status.WAITING
+        usr.in_process = False
+        with transaction.atomic():
+            upl.save()
+            usr.save()
+    finally:
+        usr.in_process = False
+        usr.save()
+
+
+
 
 if __name__ == "__main__":
     user = get_available_users()
     upl = get_uploadings_to_process()
-    print(upl[0].get_params_values())
     if user and upl:
-        pass
-        #exec(user[0], upl[0])
+        exec(user[0], upl[0])
 
     #while True:
         #time.sleep(100)
