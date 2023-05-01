@@ -5,91 +5,66 @@
 {% endblock %}
 
 {% block content %}
-<div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
+<div class="align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
     <div class="lh-1">
       <h1 class="h6 mb-0 text-white lh-1">Сформированные выгрузки</h1>
     </div>
   </div>
-  <div class="my-3 p-3 bg-body rounded shadow-sm  border-bottom">
+<div class="my-3 p-3 bg-body rounded shadow-sm  border-bottom">
+<table class="table table-bordered">
+    <tbody>
     {% for upl in upls %}
-      <div class="d-flex text-muted pt-3">
-      <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32"
+    <tr>
+        <td>
+            <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32"
            xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32"
            preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
           <rect width="100%" height="100%" fill="#007bff"/>
       </svg>
-      <div class=" col-2 pb-3 mb-0 small lh-sm border-bottom">
+      <div class="pb-3 mb-0 small lh-sm ">
         <strong class="d-block text-gray-dark"><a class="nav-item" href="">{{ upl.query.name }}</a></strong>
         {{  upl.query.description }}
       </div>
-        <div class=" col-1 pb-3 mb-0 lh-sm border-bottom "><p class="text-center">{{ upl.upl.comment }}</p></div>
+        </td>
+        <td>
+                    <div ><p class="text-center">{{ upl.upl.comment }}</p></div>
+        </td>
+        <td>
+            {% if upl.params %}
+            <table>
+                <tbody>
 
-          {% if upl.params %}
-        <div class="border-bottom ">
-
-            {% for param in upl.params %}
-          <div class="col-1 border-top border-left border-bottom">{{ param.param.name }}:</div>
-            {% endfor %}
-        </div>
-
-        <div class="border-bottom ">
-            {% for param in upl.params %}
-              <div class=" col-1 border-top border-right border-bottom">{{ param.value }}</div>
-            {% endfor %}
-        </div>
+                {% for param in upl.params %}
+                <tr>
+                    <td>
+                        <div >{{ param.param.name }}:</div>
+                    </td>
+                    <td>
+                        <div >{{ param.value }}</div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
           {% else %}
-          <div class="border-bottom ">
-              <div class=" col-1 "> </div>
-        </div>
-          <div class="border-bottom ">
-              <div class=" col-1 "> </div>
-        </div>
 
           {% endif %}
-
-
-
-       <div class=" col-1 pb-3 mb-0 lh-sm border-bottom "><p class="text-center">{{ upl.upl.create_date }}</p></div>
-           <div class=" col-2 pb-3 mb-0 lh-sm border-bottom "><p class="text-center">{{ upl.upl.get_status_display }}</p></div>
-          {% if upl.upl.file_path %}
-          <div class=" col-2 pb-3 mb-0 lh-sm border-bottom "><a class="nav-item" href="{% url 'query:download' upl.upl.file_path %}" download>Ссылка</a></div>
+        </td>
+        <td>
+               <div><p class="text-center">{{ upl.upl.create_date }}</p></div>
+        </td>
+        <td>
+            <div><p class="text-center">{{ upl.upl.get_status_display }}</p></div>
+        </td>
+        <td>
+            {% if upl.upl.file_path %}
+          <div><a class="nav-item" href="{% url 'query:download' upl.upl.file_path %}" download>Ссылка</a></div>
           {% endif %}
-
-
-      </div>
-    {% endfor %}
-  </div>
-<!--<div class="my-3 p-3 bg-body rounded shadow-sm">
-  <table class="table ">
-    <tbody>
-    {% for upl in upls %}
-    {% if upl.params %}
-    <tr>
-    <td rowspan="{{ upl.param_len}}" align="center" valign="middle">{{ upl.query.name }}</td>
-    <td rowspan="{{ upl.param_len}}" align="center" valign="middle">{{ upl.query.description }}</td>
-      <td></td>
-      <td></td>
-    <td rowspan="{{ upl.param_len}}" align="center" valign="middle">{{ upl.upl.comment }}</td>
-    <td rowspan="{{ upl.param_len}}" align="center" valign="middle">{{ upl.upl.create_date }}</td>
-      {% for param in upl.params %}
-      <tr>
-        <td>{{ param.param }}</td>
-        <td>{{ param.value }}</td>
+        </td>
     </tr>
-        {% endfor %}
-    </tr>
-    {% else %}
-       <tr>
-    <td>{{ upl.query.name }}</td>
-          <td>{{ upl.query.description }}</td>
-            <td></td>
-    <td>{{ upl.upl.comment }}</td>
-    <td>{{ upl.upl.create_date }}</td>
-    </tr>
-    {% endif %}
     {% endfor %}
     </tbody>
-  </table>-->
+</table>
 </div>
 
 {% endblock %}
