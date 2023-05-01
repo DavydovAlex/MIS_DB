@@ -50,12 +50,9 @@ def exec(user, uploading):
                                    query=uploading.query.query,
                                    params=params)
         data = connection.select(select_query)
-        print(data.head())
-
         file_name = uploading.query.name + '_' + uploading.comment + '.xlsx'
         file_path = str(settings.BASE_DIR) + '/data/' + file_name
-        print(file_path)
-        path = file_name # os.path.join(os.environ['FILES'],)
+        path = file_name
         ex_w = filters.ExcelFilterWrite(file_path, chunk_size=999999, sheet_name='Sheet')
         handlers.ExcelHandler.write(data, ex_w)
         upl.file_path = path
