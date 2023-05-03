@@ -14,6 +14,7 @@ class Query(models.Model):
     def __str__(self):
         return self.description
 
+
     #TODO Add exception processing
     @transaction.atomic
     def create_uploading(self, comment, params):
@@ -35,6 +36,13 @@ class Query(models.Model):
             return query_fields
         else:
             raise self.NotDefinedFields('Query {0} has not defined fields'.format(self.name))
+
+    def get_actual_names(self):
+        fields = self.get_fields()
+        names = []
+        for field in fields:
+            names.append(field.actual_name)
+        return names
 
     def get_params(self):
         return Params.objects.filter(query=self.pk)
@@ -89,8 +97,6 @@ class Uploadings(models.Model):
     def get_params_values(self):
         params = {param.param.name: param.value for param in ParamsValues.objects.filter(uploading=self.id)}
         return params
-
-
 
 
 class ParamsValues(models.Model):

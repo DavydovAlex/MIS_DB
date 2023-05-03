@@ -43,7 +43,6 @@ def uploadings(request):
     upl_list = []
 
     for upl in uploadings:
-        print(upl.pk)
         uploading_context = {
             'upl': upl,
             'query': Query.objects.get(pk=upl.query.pk),
@@ -56,11 +55,9 @@ def uploadings(request):
 
 def download(request, file_base_name):
     file_path = str(settings.BASE_DIR) + '/data/' + file_base_name
-    print('----------------')
-    print(file_path)
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/force_download")
-            response['Content-Disposition'] = 'inline; filename=' + file_path #os.path.basename(file_path)
+            response['Content-Disposition'] = 'inline; filename=' + file_base_name #os.path.basename(file_path)
             return response
     # If file is not exists

@@ -21,7 +21,7 @@ services:
       - CLIENT_ZIP=instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
 
     ports:
-      - 8080:8080
+      - 80:8080
       #- 1521:1521
     volumes:
       - ./instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip:/app/instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
@@ -57,9 +57,9 @@ services:
       - TNS_ADMIN=/opt/oracle/instantclient_21_9/network/admin
       - CLIENT_ZIP=instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
       - FILES=/app/mis/data
-    ports:
+    #ports:
       #- 8080:8080
-      - 1521:1521
+      #- 1521:1521
     volumes:
       - ./instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip:/app/instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
       - ./mis:/app/mis

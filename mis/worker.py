@@ -50,12 +50,16 @@ def exec(user, uploading):
                                    query=uploading.query.query,
                                    params=params)
         data = connection.select(select_query)
-        file_name = uploading.query.name + '_' + uploading.comment + '.xlsx'
+        print(data.columns)
+        data.columns = uploading.query.get_actual_names()
+        print(data.columns)
+        file_name = uploading.query.name + '_' + str(int(time.time())) + '.xlsx'
         file_path = str(settings.BASE_DIR) + '/data/' + file_name
-        path = file_name
+        print(data.head())
+
         ex_w = filters.ExcelFilterWrite(file_path, chunk_size=999999, sheet_name='Sheet')
         handlers.ExcelHandler.write(data, ex_w)
-        upl.file_path = path
+        upl.file_path = file_name
         upl.status = Uploadings.Status.LOADED
         upl.save()
     except Exception as e:

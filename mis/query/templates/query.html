@@ -22,16 +22,26 @@
             {% csrf_token %}
         <ul class="list-group mb-3">
             {% if params %}
+
              {% for param in params %}
+
                 <li class="list-group-item d-flex justify-content-between lh-sm">
                     <div>
                 <h6 class="my-0">{{ param.name }}</h6>
                     <small class="text-muted">{{ param.description }}</small>
                     </div>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control" name="{{ param.name }}"  placeholder="" value="" required>
+                        {% if param.type == param.Types.STR  %}
+                            <input type="text" class="form-control" id="{{ param.name }}" name="{{ param.name }}"  placeholder="дд.мм.гггг" value="" required>
+                            <script>
+                                $("#{{ param.name }}").click(function(){$(this).setCursorPosition(0);}).mask("99.99.9999");
+                            </script>
+                        {% else %}
+                        <input type="text" class="form-control" id="{{ param.name }}" name="{{ param.name }}"  placeholder="" value="" required>
+                        {% endif %}
                     </div>
                 </li>
+
                 {% endfor %}
             {% else %}
                 <li class="list-group-item d-flex justify-content-between lh-sm">
