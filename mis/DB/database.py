@@ -23,5 +23,17 @@ class DatabaseMis:
         data = pd.DataFrame(cursor.fetchall(), columns=header)
         return data
 
+    def select1(self, query: Query):
+        cursor = self._connection.cursor()
+        cursor.prepare(query.query)
+        print(cursor.bindvars)
+        #print(cursor.description)
+        cursor.execute(query.query, query.parameters)
+        print(cursor.bindvars)
+
+        header = [row[0] for row in cursor.description]
+        data = pd.DataFrame(cursor.fetchall(), columns=header)
+        return data
+
     def close(self):
         self._connection.close()

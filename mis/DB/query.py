@@ -5,7 +5,7 @@ class Query:
     __query_extension = 'sql'
     __params_extension = 'txt'
 
-    def __init__(self, name, query, params):
+    def __init__(self, name, query, params={}):
         self._query = query
         self._parameters = params
         self._name = name
