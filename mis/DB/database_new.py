@@ -44,6 +44,7 @@ class OracleCursor(Cursor):
         return self
 
     def __next__(self):
+
         return self._iter_object.__next__()
 
 
