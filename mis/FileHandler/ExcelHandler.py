@@ -1,7 +1,8 @@
 import abc
 import sys
 
-from openpyxl import Workbook
+from openpyxl import Workbook, \
+    load_workbook
 from abc import ABC
 
 
@@ -71,8 +72,21 @@ class ExcelHandler(FileHandler):
                     rows_in_sheet = 1
         wb.save(self.path)
 
-    def read_page(self, name=None, order=None, data_start=None):
-        pass
+    def read(self):
+        wb = load_workbook(self.path)
+        return wb
+
+    def get_data(self):
+    """
+    Возвращает итератор со всеми данными со всех листов
+    Структура листов должна сопадать
+    """
+
+
+
+
+
+        
 
 
 if __name__ == '__main__':
