@@ -1,6 +1,7 @@
 
 import os
 import sys
+import traceback
 
 #sys.path.append('/app/mis/')
 #from django import setup
@@ -11,12 +12,13 @@ import django
 from django.db import transaction
 from django.conf import settings
 
-
-
 django.setup()
 from query.models import Uploadings,DbUsers,ParamsValues
-from DB import database, query
-from FileHandler import filters, handlers
+#from DB import database, query
+#from FileHandler import filters, handlers
+
+from DB import database_new as database
+from FileHandler import ExcelHandler
 
 def get_available_users():
     return DbUsers.objects.filter(dont_use=False) & DbUsers.objects.filter(in_process=False)
@@ -38,7 +40,7 @@ def exec(user, uploading):
         """
     upl = Uploadings.objects.get(pk=uploading.pk)
     usr = DbUsers.objects.get(pk=user.pk)
-    connection = database.DatabaseMis(user.login, user.password, dsn)
+    connection = database.Oracle(user.login, user.password, dsn)
     params = upl.get_params_values()
     upl.status = Uploadings.Status.IN_PROCESS
     usr.in_process = True
@@ -46,24 +48,31 @@ def exec(user, uploading):
         upl.save()
         usr.save()
     try:
-        select_query = query.Query(name=uploading.query.name,
-                                   query=uploading.query.query,
-                                   params=params)
-        data = connection.select(select_query)
-        print(data.columns)
-        data.columns = uploading.query.get_actual_names()
-        print(data.columns)
+        # select_query = query.Query(name=uploading.query.name,
+        #                            query=uploading.query.query,
+        #                            params=params)
+        select_query = database.Query(statement=uploading.query.query,
+                                      params=params)
+        #data = connection.select(select_query)
+        cursor = connection.execute(select_query)
+        #print(data.columns)
+        #data.columns = uploading.query.get_actual_names()
+        cursor.header = uploading.query.get_actual_names()
+        #print(data.columns)
         file_name = uploading.query.name + '_' + str(int(time.time())) + '.xlsx'
         file_path = str(settings.BASE_DIR) + '/data/' + file_name
-        print(data.head())
+        #print(data.head())
 
-        ex_w = filters.ExcelFilterWrite(file_path, chunk_size=999999, sheet_name='Sheet')
-        handlers.ExcelHandler.write(data, ex_w)
+        #ex_w = filters.ExcelFilterWrite(file_path, chunk_size=999999, sheet_name='Sheet')
+        #handlers.ExcelHandler.write(data, ex_w)
+        ex_h = ExcelHandler.ExcelHandler(file_path)
+        ex_h.write(cursor)
         upl.file_path = file_name
         upl.status = Uploadings.Status.LOADED
         upl.save()
     except Exception as e:
         print(e)
+        print(''.join(traceback.TracebackException.from_exception(e).format()))
         upl.status = Uploadings.Status.WAITING
         usr.in_process = False
         with transaction.atomic():

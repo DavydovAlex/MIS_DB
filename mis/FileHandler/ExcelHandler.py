@@ -1,7 +1,9 @@
 import abc
+import sys
 
-from  openpyxl import Workbook
+from openpyxl import Workbook
 from abc import ABC
+
 
 class FileHandler(ABC):
     _path = None
@@ -26,10 +28,14 @@ class FileHandler(ABC):
     def write(self, iterator):
         pass
 
+
 class ExcelHandler(FileHandler):
-    _sheet_rows = 999999
+    MAX_ROWS = 999999
+    _sheet_rows = None
+
     def __init__(self, path):
         super().__init__(path)
+        self._sheet_rows = self.MAX_ROWS
 
     @property
     def sheet_rows(self):
@@ -43,29 +49,30 @@ class ExcelHandler(FileHandler):
         self._sheet_rows = val
 
     def write(self, iterator):
-        wb = Workbook()
-        ws = wb.active
+        wb = Workbook(write_only=True)
+        ws = wb.create_sheet()
+        #wb.active = len(wb.worksheets) - 1
         rows_in_sheet = 0
-        if self.header:
-            ws.append(self.header)
+        if iterator.header:
+            ws.append(iterator.header)
             rows_in_sheet = 1
         for row in iterator:
-            if rows_in_sheet <= self._sheet_rows:
-                ws.append(self.header)
+            if rows_in_sheet % 100000 == 0:
+                print(str(rows_in_sheet) + ':' + str(row))
+            if rows_in_sheet < self._sheet_rows:
+                rows_in_sheet += 1
+                ws.append(row)
             else:
                 rows_in_sheet = 0
-                wb.create_sheet()
-                ws = wb.active
-                if self.header:
-                    ws.append(self.header)
+                ws = wb.create_sheet()
+                #wb.active = len(wb.worksheets) - 1
+                if iterator.header:
+                    ws.append(iterator.header)
                     rows_in_sheet = 1
         wb.save(self.path)
 
-
-
-
-
-
+    def read_page(self, name=None, order=None, data_start=None):
+        pass
 
 
 if __name__ == '__main__':
