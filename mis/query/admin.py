@@ -12,8 +12,8 @@ class FieldsInline(admin.StackedInline):
 # Register your models here.
 @admin.register(models.Query)
 class QueryModelAdmin(admin.ModelAdmin):
-    fields = ('name', 'query', 'description')
-    list_display = ('name', 'description')
+    fields = ('name', 'query', 'description', 'type')
+    list_display = ('name', 'description', 'type')
     inlines = [
         ParamsInline,
         FieldsInline
