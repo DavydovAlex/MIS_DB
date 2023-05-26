@@ -52,7 +52,6 @@ class ExcelHandler(FileHandler):
     def write(self, iterator):
         wb = Workbook(write_only=True)
         ws = wb.create_sheet()
-        #wb.active = len(wb.worksheets) - 1
         rows_in_sheet = 0
         if iterator.header:
             ws.append(iterator.header)
@@ -66,7 +65,6 @@ class ExcelHandler(FileHandler):
             else:
                 rows_in_sheet = 0
                 ws = wb.create_sheet()
-                #wb.active = len(wb.worksheets) - 1
                 if iterator.header:
                     ws.append(iterator.header)
                     rows_in_sheet = 1
@@ -74,13 +72,10 @@ class ExcelHandler(FileHandler):
 
     def read(self):
         wb = load_workbook(self.path)
+        sheet = wb.worksheets[0]
         return wb
 
-    def get_data(self):
-    """
-    Возвращает итератор со всеми данными со всех листов
-    Структура листов должна сопадать
-    """
+
 
 
 
