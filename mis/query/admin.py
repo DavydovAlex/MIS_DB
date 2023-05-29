@@ -28,3 +28,8 @@ class DbUsersModelAdmin(admin.ModelAdmin):
 class UploadingsModelAdmin(admin.ModelAdmin):
     fields = ('query','comment','status','create_date','file_path')
     list_display = ('query','comment','status','create_date','file_path')
+
+@admin.register(models.Augmentations)
+class AugmentationsModelAdmin(admin.ModelAdmin):
+    fields = ('query', 'comment', 'status', 'create_date', 'file_path','uploaded_file')
+    list_display = ('query', 'comment', 'status', 'create_date', 'file_path','uploaded_file')

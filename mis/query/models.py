@@ -41,6 +41,22 @@ class Query(models.Model):
                                         value=params[param.name],
                                         uploading=uploading)
 
+    @transaction.atomic
+    def create_augmentation_query(self, comment, file, fields):
+        augmentation = Augmentations.objects.create(query=Query(id=self.pk),
+                                                    status=Uploadings.Status.WAITING,
+                                                    file_path='',
+                                                    comment=comment,
+                                                    create_date=datetime.datetime.now(),
+                                                    uploaded_file=file)
+        print(augmentation)
+        for field in fields:
+            field_object = Fields.objects.get(query=self.pk, order=int(field))
+            print(field_object)
+            print(field_object.pk)
+            UploadingFields.objects.create(augmentation=Augmentations(id=augmentation.pk),
+                                           field=Fields(id=field_object.pk))
+
     def get_fields(self):
         query_fields = Fields.objects.filter(query=self.pk).order_by('order')
         if query_fields:
@@ -115,12 +131,12 @@ class Augmentations(models.Model):
     status = models.IntegerField(choices=Status.choices, default=Status.WAITING)
     create_date = models.DateTimeField(default=datetime.datetime(1900, 1, 1))
     comment = models.CharField(max_length=200, blank=True)
-    uploaded_file = models.FileField()
-
-    # def __str__(self):
-    #     return '{}'.format()
+    uploaded_file = models.CharField(default='')
 
 
+class UploadingFields(models.Model):
+    augmentation = models.ForeignKey(Augmentations, on_delete=models.CASCADE)
+    field = models.ForeignKey(Fields, on_delete=models.CASCADE)
 
 
 class ParamsValues(models.Model):

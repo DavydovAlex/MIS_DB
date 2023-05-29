@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 import os
 from django.conf import settings
+import time
 
 
 # Create your views here.
@@ -38,6 +39,12 @@ def query(request, pk):
                                query_params_dict)
         return HttpResponseRedirect(reverse('query:index'))
 
+def handle_uploaded_file(f, file_name):
+    with open(str(settings.BASE_DIR) + '/data/' + file_name, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+
 def augmentation(request, pk):
     if request.method == "GET":
         query = Query.objects.get(pk=pk)
@@ -50,9 +57,17 @@ def augmentation(request, pk):
         return render(request, 'augmentation.html', context=context)
     elif request.method == 'POST':
         query = Query.objects.get(pk=pk)
-        query_params_dict = {param.name: request.POST.get(param.name) for param in Params.objects.filter(query=pk)}
-        query.create_uploading(request.POST.get("comment"),
-                               query_params_dict)
+        fileds = request.POST.getlist('fields')
+        print(fileds)
+        file = request.FILES['docpicker']
+        _, file_extension = os.path.splitext(file.name)
+        print(file_extension)
+        file_name = str(int(time.time())) + file_extension
+        print(type(file))
+        handle_uploaded_file(request.FILES['docpicker'], file_name)
+        query.create_augmentation_query(request.POST.get("comment"),
+                                        file_name,
+                                        fileds)
         return HttpResponseRedirect(reverse('query:index'))
 
 

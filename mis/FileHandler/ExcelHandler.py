@@ -68,12 +68,41 @@ class ExcelHandler(FileHandler):
                 if iterator.header:
                     ws.append(iterator.header)
                     rows_in_sheet = 1
+                rows_in_sheet += 1
+                ws.append(row)
         wb.save(self.path)
 
     def read(self):
         wb = load_workbook(self.path)
         sheet = wb.worksheets[0]
         return wb
+
+    def get_data(self, data_start_row):
+        wb = load_workbook(self.path)
+        sheet = wb.worksheets[0]
+        #max_row = sheet.max_row
+        #max_column = sheet.max_column
+        return sheet.iter_rows(min_row=data_start_row, values_only=True)
+
+    def get_header(self, header_row):
+        if header_row:
+            wb = load_workbook(self.path)
+            sheet = wb.worksheets[0]
+            max_row = sheet.max_row
+            max_column = sheet.max_column
+
+
+if __name__ == '__main__':
+    ex = ExcelHandler(r'D:\tmp\ex555pdata.xlsx')
+    print(ex.get_data(3).__next__())
+
+
+
+
+
+
+
+
 
 
 
@@ -82,11 +111,6 @@ class ExcelHandler(FileHandler):
 
 
         
-
-
-if __name__ == '__main__':
-    handler = ExcelHandler('123').set_sheet_rows('11')
-    print(handler.header)
 
 
 
