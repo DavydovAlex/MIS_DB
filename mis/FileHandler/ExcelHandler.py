@@ -80,8 +80,6 @@ class ExcelHandler(FileHandler):
     def get_data(self, data_start_row):
         wb = load_workbook(self.path)
         sheet = wb.worksheets[0]
-        #max_row = sheet.max_row
-        #max_column = sheet.max_column
         return sheet.iter_rows(min_row=data_start_row, values_only=True)
 
     def get_header(self, header_row):

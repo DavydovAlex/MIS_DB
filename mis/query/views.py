@@ -58,16 +58,15 @@ def augmentation(request, pk):
     elif request.method == 'POST':
         query = Query.objects.get(pk=pk)
         fileds = request.POST.getlist('fields')
-        print(fileds)
         file = request.FILES['docpicker']
         _, file_extension = os.path.splitext(file.name)
-        print(file_extension)
         file_name = str(int(time.time())) + file_extension
-        print(type(file))
         handle_uploaded_file(request.FILES['docpicker'], file_name)
+        query_params_dict = {param.name: request.POST.get(param.name) for param in Params.objects.filter(query=pk)}
         query.create_augmentation_query(request.POST.get("comment"),
                                         file_name,
-                                        fileds)
+                                        fileds,
+                                        query_params_dict)
         return HttpResponseRedirect(reverse('query:index'))
 
 
