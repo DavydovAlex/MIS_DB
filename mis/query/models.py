@@ -1,5 +1,6 @@
 from django.db import models, transaction
 import datetime
+import time
 
 
 # Create your models here.
@@ -30,7 +31,7 @@ class Query(models.Model):
     def create_uploading(self, comment, params):
         uploading = Uploadings.objects.create(query=Query(id=self.pk),
                                               status=Uploadings.Status.WAITING,
-                                              file_path='',
+                                              file_path=self.generate_file_name('xlsx'),
                                               comment=comment,
                                               create_date=datetime.datetime.now(),
                                               uploaded_file='')
@@ -43,7 +44,7 @@ class Query(models.Model):
     def create_augmentation_query(self, comment, file, fields, params):
         uploading = Uploadings.objects.create(query=Query(id=self.pk),
                                               status=Uploadings.Status.WAITING,
-                                              file_path='',
+                                              file_path=self.generate_file_name(),
                                               comment=comment,
                                               create_date=datetime.datetime.now(),
                                               uploaded_file=file)
@@ -58,6 +59,11 @@ class Query(models.Model):
             ParamsValues.objects.create(param=Params(param.id),
                                         value=params[param.name],
                                         uploading=uploading)
+
+    def generate_file_name(self,extension):
+        file_name = self.name + '_' + str(int(time.time())) + '.' + extension
+        return file_name
+
 
     def get_fields(self):
         query_fields = Fields.objects.filter(query=self.pk).order_by('order')
@@ -130,6 +136,9 @@ class Uploadings(models.Model):
     def get_uploading_fields(self):
         fields = [field.field.order for field in UploadingFields.objects.filter(augmentation=self.id)]
         return fields
+
+
+
 
 
 # class Augmentations(models.Model):

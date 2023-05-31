@@ -57,7 +57,7 @@
             <div><p class="text-center">{{ upl.upl.get_status_display }}</p></div>
         </td>
         <td>
-            {% if upl.upl.file_path %}
+            {% if upl.get_status_display == LOADED %}
           <div><a class="nav-item" href="{% url 'query:download' upl.upl.file_path %}" download>Ссылка</a></div>
           {% endif %}
         </td>

@@ -65,8 +65,8 @@ def exec(user, uploading):
         upl.save()
         usr.save()
     try:
-        file_name = uploading.query.name + '_' + str(int(time.time())) + '.xlsx'
-        file_path = str(settings.BASE_DIR) + '/data/' + file_name
+        #file_name = uploading.query.name + '_' + str(int(time.time())) + '.xlsx'
+        #file_path = str(settings.BASE_DIR) + '/data/' + upl.file_path
         print(upl.query.type)
         if upl.query.type == Query.Types.UPLOADING:
             params = upl.get_params_values()
@@ -75,9 +75,9 @@ def exec(user, uploading):
             cursor = connection.execute(select_query)
             cursor.header = uploading.query.get_actual_names()
 
-            ex_h = ExcelHandler.ExcelHandler(file_path)
+            ex_h = ExcelHandler.ExcelHandler(str(settings.BASE_DIR) + '/data/' + upl.file_path)
             ex_h.write(cursor)
-            upl.file_path = file_name
+            #upl.file_path = file_name
             upl.status = Uploadings.Status.LOADED
             upl.save()
         else:
@@ -107,11 +107,11 @@ def exec(user, uploading):
                     load_rows.append(data[int(field)-1])
                 print(load_rows)
                 augmentated_data.append(list(row) + load_rows)
-            file_name = uploading.query.name + '_' + str(int(time.time())) + '.xlsx'
-            file_path = str(settings.BASE_DIR) + '/data/' + file_name
-            ex_h = ExcelHandler.ExcelHandler(file_path)
+            #file_name = uploading.query.name + '_' + str(int(time.time())) + '.xlsx'
+            #file_path = str(settings.BASE_DIR) + '/data/' + upl.file_path
+            ex_h = ExcelHandler.ExcelHandler(str(settings.BASE_DIR) + '/data/' + upl.file_path)
             ex_h.write(augmentated_data)
-            upl.file_path = file_name
+            #upl.file_path = file_name
             upl.status = Uploadings.Status.LOADED
             upl.save()
 
