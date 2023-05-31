@@ -26,5 +26,26 @@ class DbUsersModelAdmin(admin.ModelAdmin):
 
 @admin.register(models.Uploadings)
 class UploadingsModelAdmin(admin.ModelAdmin):
-    fields = ('query','comment','status','create_date','file_path')
+    fields = ('query','comment','status','create_date','file_path','uploaded_file')
     list_display = ('query','comment','status','create_date','file_path')
+
+# @admin.register(models.Augmentations)
+# class AugmentationsModelAdmin(admin.ModelAdmin):
+#     fields = ('query', 'comment', 'status', 'create_date', 'file_path','uploaded_file')
+#     list_display = ('query', 'comment', 'status', 'create_date', 'file_path','uploaded_file')
+
+# @admin.register(models.UploadingFields)
+# class AugmentationsModelAdmin(admin.ModelAdmin):
+#     fields = ('augmentation', 'field')
+#     list_display = ('augmentation', 'field')
+
+@admin.register(models.ParamsValues)
+class ParamsValuesModelAdmin(admin.ModelAdmin):
+    fields = ('param', 'value','uploading')
+    list_display = ('param', 'value','uploading')
+
+
+@admin.register(models.Params)
+class ParamsModelAdmin(admin.ModelAdmin):
+    fields = ('name', 'type','description','query')
+    list_display = ('name', 'type','description','query')

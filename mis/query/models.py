@@ -1,11 +1,8 @@
-
 from django.db import models, transaction
 import datetime
 
 
 # Create your models here.
-
-
 class Query(models.Model):
     class Types(models.IntegerChoices):
         """
@@ -28,14 +25,35 @@ class Query(models.Model):
     def get_queries_by_type(cls, type):
         return Query.objects.filter(type=type)
 
-    #TODO Add exception processing
+    # TODO Add exception processing
     @transaction.atomic
     def create_uploading(self, comment, params):
         uploading = Uploadings.objects.create(query=Query(id=self.pk),
                                               status=Uploadings.Status.WAITING,
                                               file_path='',
                                               comment=comment,
-                                              create_date=datetime.datetime.now())
+                                              create_date=datetime.datetime.now(),
+                                              uploaded_file='')
+        for param in Params.objects.filter(query=self.pk):
+            ParamsValues.objects.create(param=Params(param.id),
+                                        value=params[param.name],
+                                        uploading=uploading)
+
+    @transaction.atomic
+    def create_augmentation_query(self, comment, file, fields, params):
+        uploading = Uploadings.objects.create(query=Query(id=self.pk),
+                                              status=Uploadings.Status.WAITING,
+                                              file_path='',
+                                              comment=comment,
+                                              create_date=datetime.datetime.now(),
+                                              uploaded_file=file)
+        print(uploading)
+        for field in fields:
+            field_object = Fields.objects.get(query=self.pk, order=int(field))
+            print(field_object)
+            print(field_object.pk)
+            UploadingFields.objects.create(augmentation=Uploadings(id=uploading.pk),
+                                           field=Fields(id=field_object.pk))
         for param in Params.objects.filter(query=self.pk):
             ParamsValues.objects.create(param=Params(param.id),
                                         value=params[param.name],
@@ -99,28 +117,38 @@ class Uploadings(models.Model):
     status = models.IntegerField(choices=Status.choices, default=Status.WAITING)
     create_date = models.DateTimeField(default=datetime.datetime(1900, 1, 1))
     comment = models.CharField(max_length=200, blank=True)
+    uploaded_file = models.CharField(default='')
 
     def get_params_values(self):
+        print('wefwfeew' +' '+str(self.id))
+        print(ParamsValues.objects.filter(uploading=self.id))
+        for param in ParamsValues.objects.filter(uploading=self.id):
+            print(param.param.name, param.value)
         params = {param.param.name: param.value for param in ParamsValues.objects.filter(uploading=self.id)}
         return params
 
-class Augmentations(models.Model):
-    class Status(models.IntegerChoices):
-        WAITING = 0
-        LOADED = 1
-        IN_PROCESS = 2
-
-    query = models.ForeignKey(Query, on_delete=models.CASCADE)
-    file_path = models.CharField(default='')  # null=True, blank=True
-    status = models.IntegerField(choices=Status.choices, default=Status.WAITING)
-    create_date = models.DateTimeField(default=datetime.datetime(1900, 1, 1))
-    comment = models.CharField(max_length=200, blank=True)
-    uploaded_file = models.FileField()
-
-    # def __str__(self):
-    #     return '{}'.format()
+    def get_uploading_fields(self):
+        fields = [field.field.order for field in UploadingFields.objects.filter(augmentation=self.id)]
+        return fields
 
 
+# class Augmentations(models.Model):
+#     class Status(models.IntegerChoices):
+#         WAITING = 0
+#         LOADED = 1
+#         IN_PROCESS = 2
+#
+#     query = models.ForeignKey(Query, on_delete=models.CASCADE)
+#     file_path = models.CharField(default='')  # null=True, blank=True
+#     status = models.IntegerField(choices=Status.choices, default=Status.WAITING)
+#     create_date = models.DateTimeField(default=datetime.datetime(1900, 1, 1))
+#     comment = models.CharField(max_length=200, blank=True)
+#     uploaded_file = models.CharField(default='')
+
+
+class UploadingFields(models.Model):
+    augmentation = models.ForeignKey(Uploadings, on_delete=models.CASCADE)
+    field = models.ForeignKey(Fields, on_delete=models.CASCADE)
 
 
 class ParamsValues(models.Model):
