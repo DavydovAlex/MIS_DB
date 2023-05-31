@@ -82,9 +82,12 @@ def exec(user, uploading):
             upl.save()
         else:
             fields = upl.get_uploading_fields()
+            print(fields)
             params = upl.get_params_values()
             ex_h = ExcelHandler.ExcelHandler(str(settings.BASE_DIR) + '/data/' + upl.uploaded_file)
-            data_it = ex_h.get_data(2)
+            ex_h.read()
+            data_it = ex_h.handle_page()
+            augmentated_data = []
             for row in data_it:
                 # print(row)
                 print(params)
@@ -98,7 +101,25 @@ def exec(user, uploading):
                 print(row_params)
                 select_query = database.Query(statement=uploading.query.query, params=row_params)
                 cursor = connection.execute(select_query)
+                load_rows = []
                 data = cursor.__next__()
+                for field in fields:
+                    load_rows.append(data[int(field)-1])
+                print(load_rows)
+                augmentated_data.append(list(row) + load_rows)
+            file_name = uploading.query.name + '_' + str(int(time.time())) + '.xlsx'
+            file_path = str(settings.BASE_DIR) + '/data/' + file_name
+            ex_h = ExcelHandler.ExcelHandler(file_path)
+            ex_h.write(augmentated_data)
+            upl.file_path = file_name
+            upl.status = Uploadings.Status.LOADED
+            upl.save()
+
+
+
+
+
+
 
 
     except Exception as e:

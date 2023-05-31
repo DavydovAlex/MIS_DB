@@ -31,8 +31,9 @@ class FileHandler(ABC):
 
 
 class ExcelHandler(FileHandler):
-    MAX_ROWS = 999999
-    _sheet_rows = None
+    MAX_ROWS = 999999  # Максимальное количество строк на листе
+    _sheet_rows = None  # Количество строк на листе
+    _wb = None
 
     def __init__(self, path):
         super().__init__(path)
@@ -50,8 +51,8 @@ class ExcelHandler(FileHandler):
         self._sheet_rows = val
 
     def write(self, iterator):
-        wb = Workbook(write_only=True)
-        ws = wb.create_sheet()
+        self._wb = Workbook(write_only=True)
+        ws = self._wb.create_sheet()
         rows_in_sheet = 0
         if iterator.header:
             ws.append(iterator.header)
@@ -64,18 +65,45 @@ class ExcelHandler(FileHandler):
                 ws.append(row)
             else:
                 rows_in_sheet = 0
-                ws = wb.create_sheet()
+                ws = self._wb.create_sheet()
                 if iterator.header:
                     ws.append(iterator.header)
                     rows_in_sheet = 1
                 rows_in_sheet += 1
                 ws.append(row)
-        wb.save(self.path)
+        self._wb.save(self.path)
 
     def read(self):
-        wb = load_workbook(self.path)
-        sheet = wb.worksheets[0]
-        return wb
+        self._wb = load_workbook(self.path)
+
+    def get_raw_page(self, page_number=0):
+        sheet = self._wb.worksheets[page_number]
+        return sheet.iter_rows(values_only=True)
+
+    def handle_page(self, page_number=0):
+        sheet = self._wb.worksheets[page_number]
+        self._remove_empty_columns(sheet)
+        self._remove_empty_rows(sheet)
+        return sheet.iter_rows(values_only=True)
+
+    def _remove_empty_rows(self, sheet):
+        rows_to_remove = []
+        for i, row in enumerate(sheet.iter_rows(values_only=True), start=1):
+            column_values = set(row)
+
+            if len(column_values) == 1 and None in column_values:
+                rows_to_remove.append(i)
+        for row_number in sorted(rows_to_remove, reverse=True):
+            sheet.delete_rows(row_number)
+
+    def _remove_empty_columns(self, sheet):
+        columns_to_remove = []
+        for i, col in enumerate(sheet.iter_cols(values_only=True), start=1):
+            column_values = set(col)
+            if len(column_values) == 1 and None in column_values:
+                columns_to_remove.append(i)
+        for column_number in sorted(columns_to_remove, reverse=True):
+            sheet.delete_cols(column_number)
 
     def get_data(self, data_start_row):
         wb = load_workbook(self.path)
@@ -91,26 +119,7 @@ class ExcelHandler(FileHandler):
 
 
 if __name__ == '__main__':
-    ex = ExcelHandler(r'D:\tmp\ex555pdata.xlsx')
-    print(ex.get_data(3).__next__())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
+    ex = ExcelHandler(r'D:\tmp\Children01.07.22_1656993384.xlsx')
+    ex.read()
+    for row in ex.handle_page():
+        print(row)

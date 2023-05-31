@@ -128,7 +128,7 @@ class Uploadings(models.Model):
         return params
 
     def get_uploading_fields(self):
-        fields = {field.field.order for field in UploadingFields.objects.filter(augmentation=self.id)}
+        fields = [field.field.order for field in UploadingFields.objects.filter(augmentation=self.id)]
         return fields
 
 
