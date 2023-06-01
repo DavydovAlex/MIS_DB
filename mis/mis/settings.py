@@ -137,4 +137,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CUSTOM_SETTINGS
 
-FILES_DIR = os.environ.get('UPLOADED_FILES')
+FILES_DIR = Path(os.environ.get('UPLOADED_FILES')).resolve()

@@ -71,7 +71,6 @@ def exec(user, uploading):
                                           params=params)
             cursor = connection.execute(select_query)
             cursor.header = uploading.query.get_actual_names()
-
             ex_h = ExcelHandler.ExcelHandler(str(settings.FILES_DIR) + upl.file_path)
             ex_h.write(cursor)
             upl.status = Uploadings.Status.LOADED
@@ -82,42 +81,25 @@ def exec(user, uploading):
             params = upl.get_params_values()
             ex_h = ExcelHandler.ExcelHandler(str(settings.FILES_DIR) + upl.uploaded_file)
             ex_h.read()
-            data_it = ex_h.handle_page()
-
             augmentated_data = []
-            for row in data_it:
-                print(row)
-                print(params)
-                #date_to_string(row)
+            for row in ex_h.get_page_data():
                 row_params = {}
                 for param in params:
-                    print(param)
                     if int(params[param]) != 0:
                         row_params[param] = date_to_string(row)[int(params[param])-1]
                     else:
                         row_params[param] = ''
-                print(row_params)
-                print(uploading.query.query)
                 select_query = database.Query(statement=uploading.query.query, params=row_params)
                 cursor = connection.execute(select_query)
                 load_rows = []
                 data = cursor.__next__()
                 for field in fields:
                     load_rows.append(data[int(field)-1])
-                print(load_rows)
                 augmentated_data.append(list(row) + load_rows)
             ex_h = ExcelHandler.ExcelHandler(str(settings.FILES_DIR) + upl.file_path)
             ex_h.write_data(augmentated_data)
             upl.status = Uploadings.Status.LOADED
             upl.save()
-
-
-
-
-
-
-
-
     except Exception as e:
         print(e)
         print(''.join(traceback.TracebackException.from_exception(e).format()))

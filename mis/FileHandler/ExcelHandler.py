@@ -90,6 +90,40 @@ class ExcelHandler(FileHandler):
         self._remove_empty_rows(sheet)
         return sheet.iter_rows(values_only=True)
 
+    def _get_filled_columns(self, sheet):
+        filled_columns = []
+        for i, col in enumerate(sheet.iter_cols(values_only=True), start=1):
+            column_values = set(col)
+            if len(column_values) > 1 or None not in column_values:
+                print(str(i) + str(column_values))
+                filled_columns.append(i)
+        return filled_columns
+
+    def _get_filled_rows(self, sheet):
+        filled_rows = []
+        for i, row in enumerate(sheet.iter_rows(values_only=True), start=1):
+            column_values = set(row)
+            if len(column_values) > 1 or None not in column_values:
+                print(str(i) + str(column_values))
+                filled_rows.append(i)
+        return filled_rows
+
+    def get_page_data(self, page_number=0):
+        sheet = self._wb.worksheets[page_number]
+        filled_columns = self._get_filled_columns(sheet)
+        filled_rows = self._get_filled_rows(sheet)
+        for i, row in enumerate(sheet.iter_rows(values_only=True), start=1):
+            if i in filled_rows:
+                row_filtered = []
+                for j, el in enumerate(row, start=1):
+                    if j in filled_columns:
+                        row_filtered.append(el)
+                yield row_filtered
+
+
+
+        return sheet.iter_rows(values_only=True)
+
     def _remove_empty_rows(self, sheet):
         rows_to_remove = []
         for i, row in enumerate(sheet.iter_rows(values_only=True), start=1):
@@ -123,7 +157,7 @@ class ExcelHandler(FileHandler):
 
 
 if __name__ == '__main__':
-    ex = ExcelHandler(r'D:\tmp\Children01.07.22_1656993384.xlsx')
+    ex = ExcelHandler(r'/home/olylad/Downloads/book1.xlsx')
     ex.read()
-    for row in ex.handle_page():
+    for row in ex.get_page_data():
         print(row)
