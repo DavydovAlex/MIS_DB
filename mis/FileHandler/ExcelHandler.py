@@ -51,13 +51,16 @@ class ExcelHandler(FileHandler):
         self._sheet_rows = val
 
     def write(self, iterator):
+        self.write_data(iterator, iterator.header)
+
+    def write_data(self, data, header=None):
         self._wb = Workbook(write_only=True)
         ws = self._wb.create_sheet()
         rows_in_sheet = 0
-        if iterator.header:
-            ws.append(iterator.header)
+        if header:
+            ws.append(header)
             rows_in_sheet = 1
-        for row in iterator:
+        for row in data:
             if rows_in_sheet % 100000 == 0:
                 print(str(rows_in_sheet) + ':' + str(row))
             if rows_in_sheet < self._sheet_rows:
@@ -66,12 +69,13 @@ class ExcelHandler(FileHandler):
             else:
                 rows_in_sheet = 0
                 ws = self._wb.create_sheet()
-                if iterator.header:
-                    ws.append(iterator.header)
+                if header:
+                    ws.append(header)
                     rows_in_sheet = 1
                 rows_in_sheet += 1
                 ws.append(row)
         self._wb.save(self.path)
+
 
     def read(self):
         self._wb = load_workbook(self.path)
@@ -92,6 +96,7 @@ class ExcelHandler(FileHandler):
             column_values = set(row)
 
             if len(column_values) == 1 and None in column_values:
+                print(str(i) + str(column_values))
                 rows_to_remove.append(i)
         for row_number in sorted(rows_to_remove, reverse=True):
             sheet.delete_rows(row_number)
@@ -100,14 +105,13 @@ class ExcelHandler(FileHandler):
         columns_to_remove = []
         for i, col in enumerate(sheet.iter_cols(values_only=True), start=1):
             column_values = set(col)
+            print(column_values)
             if len(column_values) == 1 and None in column_values:
                 columns_to_remove.append(i)
         for column_number in sorted(columns_to_remove, reverse=True):
             sheet.delete_cols(column_number)
 
-    def get_data(self, data_start_row):
-        wb = load_workbook(self.path)
-        sheet = wb.worksheets[0]
+    def get_data(self, sheet, data_start_row):
         return sheet.iter_rows(min_row=data_start_row, values_only=True)
 
     def get_header(self, header_row):

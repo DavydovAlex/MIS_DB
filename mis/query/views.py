@@ -40,7 +40,7 @@ def query(request, pk):
         return HttpResponseRedirect(reverse('query:index'))
 
 def handle_uploaded_file(f, file_name):
-    with open(str(settings.BASE_DIR) + '/data/' + file_name, 'wb+') as destination:
+    with open(str(settings.FILES_DIR) + file_name, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
 
@@ -96,7 +96,8 @@ def augmentators(request):
 
 
 def download(request, file_base_name):
-    file_path = str(settings.BASE_DIR) + '/data/' + file_base_name
+    file_path = str(settings.FILES_DIR) + file_base_name
+    print(file_path)
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/force_download")

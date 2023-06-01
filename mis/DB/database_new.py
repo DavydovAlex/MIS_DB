@@ -47,6 +47,8 @@ class OracleCursor(Cursor):
         return self._iter_object.__next__()
 
 
+
+
 class Database(ABC):
     user = None
     password = None

@@ -44,7 +44,7 @@ class Query(models.Model):
     def create_augmentation_query(self, comment, file, fields, params):
         uploading = Uploadings.objects.create(query=Query(id=self.pk),
                                               status=Uploadings.Status.WAITING,
-                                              file_path=self.generate_file_name(),
+                                              file_path=self.generate_file_name('xlsx'),
                                               comment=comment,
                                               create_date=datetime.datetime.now(),
                                               uploaded_file=file)
