@@ -77,7 +77,6 @@ def exec(user, uploading):
             upl.save()
         else:
             fields = upl.get_uploading_fields()
-            print(fields)
             params = upl.get_params_values()
             ex_h = ExcelHandler.ExcelHandler(str(settings.FILES_DIR) + upl.uploaded_file)
             ex_h.read()
@@ -92,9 +91,12 @@ def exec(user, uploading):
                 select_query = database.Query(statement=uploading.query.query, params=row_params)
                 cursor = connection.execute(select_query)
                 load_rows = []
+                load_header = []
                 data = cursor.__next__()
                 for field in fields:
                     load_rows.append(data[int(field)-1])
+                for field in fields:
+                    load_header.append(cursor.header[int(field)-1])
                 augmentated_data.append(list(row) + load_rows)
             ex_h = ExcelHandler.ExcelHandler(str(settings.FILES_DIR) + upl.file_path)
             ex_h.write_data(augmentated_data)

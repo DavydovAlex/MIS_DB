@@ -1,7 +1,7 @@
 import abc
 
 import oracledb as ora
-#rom query import Query
+# rom query import Query
 import pandas as pd
 from abc import ABC
 
@@ -47,8 +47,6 @@ class OracleCursor(Cursor):
         return self._iter_object.__next__()
 
 
-
-
 class Database(ABC):
     user = None
     password = None
@@ -73,16 +71,29 @@ class Database(ABC):
 
 
 class Oracle(Database):
+    connection = None
+    pool = None
 
     def __init__(self, user, password, dsn):
         super().__init__(user, password, dsn)
-        ora.init_oracle_client() #TODO вынести в отдельный метод ?
+        ora.init_oracle_client()  # TODO вынести в отдельный метод ?
         self.connection = self.open_connection()
 
     def open_connection(self):
         return ora.connect(user=self.user,
                            password=self.password,
                            dsn=self.dsn)
+
+    def create_pool(self):
+        self.pool = ora.create_pool(user=self.user,
+                                    password=self.password,
+                                    dsn=self.dsn,
+                                    min=1,
+                                    max=1,
+                                    increment=1)
+        return self.pool
+
+
 
     def close_connection(self):
         self.connection.close()
@@ -91,6 +102,7 @@ class Oracle(Database):
         cursor = self.connection.cursor()
         cursor.execute(query.statement, query.params)
         return OracleCursor(cursor)
+
 
 class Database:
 
@@ -101,15 +113,13 @@ class Database:
         self._dsn = dsn
         self._connection = self._connect()
 
-
     def _connect(self):
         return ora.connect(user=self._user,
                            password=self._password,
                            dsn=self._dsn)
 
-    def execute(self, query:Query):
+    def execute(self, query: Query):
         cursor = self._connection.cursor()
-
 
     def select(self, query: Query):
         cursor = self._connection.cursor()
@@ -122,7 +132,7 @@ class Database:
         header = [row[0] for row in cursor.description]
         data = pd.DataFrame(cursor.fetchall(), columns=header)
         print(data)
-        #return data
+        # return data
 
     def close(self):
         self._connection.close()
