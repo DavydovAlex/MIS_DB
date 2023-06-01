@@ -59,9 +59,9 @@ def exec(user, uploading):
     upl = Uploadings.objects.get(pk=uploading.pk)
     usr = DbUsers.objects.get(pk=user.pk)
     connection = database.Oracle(user.login, user.password, dsn)
-    upl.status = Uploadings.Status.IN_PROCESS
-    usr.in_process = True
     with transaction.atomic():
+        upl.status = Uploadings.Status.IN_PROCESS
+        usr.in_process = True
         upl.save()
         usr.save()
     try:
@@ -71,17 +71,19 @@ def exec(user, uploading):
                                           params=params)
             cursor = connection.execute(select_query)
             cursor.header = uploading.query.get_actual_names()
-            ex_h = ExcelHandler.ExcelHandler(str(settings.FILES_DIR) + upl.file_path)
+            ex_h = ExcelHandler.ExcelHandler(settings.FILES_DIR / upl.file_path)
             ex_h.write(cursor)
             upl.status = Uploadings.Status.LOADED
             upl.save()
         else:
             fields = upl.get_uploading_fields()
-            print(fields)
             params = upl.get_params_values()
-            ex_h = ExcelHandler.ExcelHandler(str(settings.FILES_DIR) + upl.uploaded_file)
+            ex_h = ExcelHandler.ExcelHandler(settings.FILES_DIR / upl.uploaded_file)
             ex_h.read()
             augmentated_data = []
+            load_header = []
+            for field in fields:
+                load_header.append(uploading.query.get_actual_names()[int(field) - 1])
             for row in ex_h.get_page_data():
                 row_params = {}
                 for param in params:
@@ -96,7 +98,7 @@ def exec(user, uploading):
                 for field in fields:
                     load_rows.append(data[int(field)-1])
                 augmentated_data.append(list(row) + load_rows)
-            ex_h = ExcelHandler.ExcelHandler(str(settings.FILES_DIR) + upl.file_path)
+            ex_h = ExcelHandler.ExcelHandler(settings.FILES_DIR / upl.file_path)
             ex_h.write_data(augmentated_data)
             upl.status = Uploadings.Status.LOADED
             upl.save()
@@ -116,24 +118,9 @@ def exec(user, uploading):
 
 if __name__ == "__main__":
     print(settings.DEFAULT_FILE_STORAGE)
-    print(str(settings.FILES_DIR))
+    print(settings.FILES_DIR)
     user = get_available_users()
     upl = get_uploadings_to_process()
     if user and upl:
         exec(user[0], upl[0])
 
-    # while True:
-    # time.sleep(100)
-    # query =query.Query(name='tst',query='Select * from D_AGENTS where rownum<=100',params={})
-    #
-    # db = database.DatabaseMis('amdavidov_db', 'p123', dsn)
-    # data = db.select(query)
-    # print(data)
-
-    # users = get_available_users()
-    # uploadings = get_uploadings_to_process()
-    # print(uploadings[0].query.query)
-    #
-    # for upl in uploadings:
-    #     users = get_available_users()
-    # if users:

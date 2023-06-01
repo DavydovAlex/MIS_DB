@@ -19,7 +19,7 @@ services:
       #- LD_LIBRARY_PATH=/opt/oracle/instantclient_21_9
       #- TNS_ADMIN=/opt/oracle/instantclient_21_9/network/admin
       #- CLIENT_ZIP=instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
-      - UPLOADED_FILES=/app/mis/data/
+      - UPLOADED_FILES=/app/data/
 
     ports:
       - 80:8080
@@ -32,7 +32,7 @@ services:
       - ./requirements.txt:/app/requirements.txt
       - ./DB:/usr/bin/DB
       - ./FileHandler:/usr/bin/FileHandler
-      - ./data:/app/mis/data
+      - ./data:/app/data
       #- X:\2_Отдел разработки\Давыдов\DATA:/app/mis/data
     depends_on:
       - db
@@ -57,7 +57,7 @@ services:
       - LD_LIBRARY_PATH=/opt/oracle/instantclient_21_9
       - TNS_ADMIN=/opt/oracle/instantclient_21_9/network/admin
       - CLIENT_ZIP=instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
-      - UPLOADED_FILES=/app/mis/data/
+      - UPLOADED_FILES=/app/data/
     #ports:
       #- 8080:8080
       #- 1521:1521
@@ -70,7 +70,7 @@ services:
       - ./requirements.txt:/app/requirements.txt
       - ./DB:/usr/bin/DB
       - ./FileHandler:/usr/bin/FileHandler
-      - ./data:/app/mis/data
+      - ./data:/app/data
       #- X:\2_Отдел разработки\Давыдов\DATA:/app/mis/data
     depends_on:
       - db

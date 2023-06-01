@@ -108,11 +108,11 @@ class ExcelHandler(FileHandler):
                 filled_rows.append(i)
         return filled_rows
 
-    def get_page_data(self, page_number=0):
+    def get_page_data(self, page_number=0, data_start_row=1):
         sheet = self._wb.worksheets[page_number]
         filled_columns = self._get_filled_columns(sheet)
         filled_rows = self._get_filled_rows(sheet)
-        for i, row in enumerate(sheet.iter_rows(values_only=True), start=1):
+        for i, row in enumerate(sheet.iter_rows(min_row=data_start_row,values_only=True), start=1):
             if i in filled_rows:
                 row_filtered = []
                 for j, el in enumerate(row, start=1):
@@ -148,12 +148,13 @@ class ExcelHandler(FileHandler):
     def get_data(self, sheet, data_start_row):
         return sheet.iter_rows(min_row=data_start_row, values_only=True)
 
-    def get_header(self, header_row):
+    def get_header(self, page_number=0, header_row=None):
         if header_row:
-            wb = load_workbook(self.path)
-            sheet = wb.worksheets[0]
-            max_row = sheet.max_row
-            max_column = sheet.max_column
+            sheet = self._wb.worksheets[page_number]
+            return list(sheet.iter_rows(min_row=header_row, max_row=header_row,values_only=True))
+        else:
+            return None
+
 
 
 if __name__ == '__main__':
