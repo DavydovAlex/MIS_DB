@@ -23,17 +23,13 @@ services:
 
     ports:
       - 80:8080
-      #- 1521:1521
     volumes:
-      #- ./instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip:/app/instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
       - ./mis:/app/mis
       - ./bootstrap.sh:/app/bootstrap.sh
-      #- ./TNSNAMES.ORA:/app/TNSNAMES.ORA
       - ./requirements.txt:/app/requirements.txt
       - ./DB:/usr/bin/DB
       - ./FileHandler:/usr/bin/FileHandler
       - ./data:/app/data
-      #- X:\2_Отдел разработки\Давыдов\DATA:/app/mis/data
     depends_on:
       - db
     links:
@@ -66,12 +62,10 @@ services:
       - ./mis:/app/mis
       - ./bootstrap.sh:/app/bootstrap.sh
       - ./cron.sh:/app/cron.sh
-      #- ./TNSNAMES.ORA:/app/TNSNAMES.ORA
       - ./requirements.txt:/app/requirements.txt
       - ./DB:/usr/bin/DB
       - ./FileHandler:/usr/bin/FileHandler
       - ./data:/app/data
-      #- X:\2_Отдел разработки\Давыдов\DATA:/app/mis/data
     depends_on:
       - db
     links:
